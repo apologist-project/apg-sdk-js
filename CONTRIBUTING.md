@@ -42,15 +42,15 @@ If you’d like to use the repository from source, you can either install from g
 To install via git:
 
 ```sh
-$ npm install git+ssh://git@github.com:stainless-sdks/apologist-typescript.git
+$ npm install git+ssh://git@github.com:apologist-project/apg-sdk-js.git
 ```
 
 Alternatively, to link a local copy of the repo:
 
 ```sh
 # Clone
-$ git clone https://www.github.com/stainless-sdks/apologist-typescript
-$ cd apologist-typescript
+$ git clone https://www.github.com/apologist-project/apg-sdk-js
+$ cd apg-sdk-js
 
 # With yarn
 $ yarn link
