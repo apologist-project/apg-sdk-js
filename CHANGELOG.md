@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.3 (2025-12-20)
+
+Full Changelog: [v0.0.2...v0.0.3](https://github.com/apologist-project/apg-sdk-js/compare/v0.0.2...v0.0.3)
+
+### Chores
+
+* **internal:** codegen related update ([7f0d3df](https://github.com/apologist-project/apg-sdk-js/commit/7f0d3dfd90f7c70ddeb7603c3d0d7df12b83b3ba))
+
 ## 0.0.2 (2025-12-10)
 
 Full Changelog: [v0.0.1...v0.0.2](https://github.com/apologist-project/apg-sdk-js/compare/v0.0.1...v0.0.2)
