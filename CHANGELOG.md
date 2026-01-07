@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.3 (2026-01-07)
+
+Full Changelog: [v0.0.2...v0.0.3](https://github.com/apologist-project/apg-sdk-js/compare/v0.0.2...v0.0.3)
+
+### Chores
+
+* break long lines in snippets into multiline ([7438bd3](https://github.com/apologist-project/apg-sdk-js/commit/7438bd35e8c91950629f2a7214522570e199c79a))
+* **internal:** codegen related update ([0747559](https://github.com/apologist-project/apg-sdk-js/commit/07475590818a1f0d154bd473f506b47d2a0d6fd6))
+* **internal:** codegen related update ([7f0d3df](https://github.com/apologist-project/apg-sdk-js/commit/7f0d3dfd90f7c70ddeb7603c3d0d7df12b83b3ba))
+
 ## 0.0.2 (2025-12-10)
 
 Full Changelog: [v0.0.1...v0.0.2](https://github.com/apologist-project/apg-sdk-js/compare/v0.0.1...v0.0.2)
