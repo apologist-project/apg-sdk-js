@@ -1,6 +1,6 @@
 {
   "name": "apologist",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The official TypeScript library for the Apologist API",
   "author": "Apologist <>",
   "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
   "type": "commonjs",
   "repository": "github:apologist-project/apg-sdk-js",
   "license": "Apache-2.0",
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.27.0",
   "files": [
     "**/*"
   ],
