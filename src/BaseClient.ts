@@ -66,9 +66,9 @@ export function normalizeClientOptions<T extends BaseClientOptions = BaseClientO
     const headers = mergeHeaders(
         {
             "X-Fern-Language": "JavaScript",
-            "X-Fern-SDK-Name": "apologist-agent",
-            "X-Fern-SDK-Version": "0.0.3",
-            "User-Agent": "apologist-agent/0.0.3",
+            "X-Fern-SDK-Name": "apologist",
+            "X-Fern-SDK-Version": "0.0.4",
+            "User-Agent": "apologist/0.0.4",
             "X-Fern-Runtime": core.RUNTIME.type,
             "X-Fern-Runtime-Version": core.RUNTIME.version,
         },

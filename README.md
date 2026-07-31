@@ -1,7 +1,7 @@
 # ApologistAi TypeScript Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fapologist-project%2Fapg-sdk-js)
-[![npm shield](https://img.shields.io/npm/v/apologist-agent)](https://www.npmjs.com/package/apologist-agent)
+[![npm shield](https://img.shields.io/npm/v/apologist)](https://www.npmjs.com/package/apologist)
 
 The ApologistAi TypeScript library provides convenient access to the ApologistAi APIs from TypeScript.
 
@@ -34,7 +34,7 @@ The ApologistAi TypeScript library provides convenient access to the ApologistAi
 ## Installation
 
 ```sh
-npm i -s apologist-agent
+npm i -s apologist
 ```
 
 ## Reference
@@ -46,7 +46,7 @@ A full reference for this library is available [here](https://github.com/apologi
 Instantiate and use the client with the following:
 
 ```typescript
-import { ApologistAgentClient } from "apologist-agent";
+import { ApologistAgentClient } from "apologist";
 
 const client = new ApologistAgentClient({ apiKey: "YOUR_API_KEY" });
 await client.chat.createChatCompletion({
@@ -366,7 +366,7 @@ If you are interested in other runtime environments, please open or upvote an is
 This SDK allows you to configure different environments for API requests.
 
 ```typescript
-import { ApologistAgentClient, ApologistAgentEnvironment } from "apologist-agent";
+import { ApologistAgentClient, ApologistAgentEnvironment } from "apologist";
 
 const client = new ApologistAgentClient({
     environment: ApologistAgentEnvironment.Default,
@@ -379,7 +379,7 @@ The SDK exports all request and response types as TypeScript interfaces. Simply 
 following namespace:
 
 ```typescript
-import { ApologistAgent } from "apologist-agent";
+import { ApologistAgent } from "apologist";
 
 const request: ApologistAgent.ListChatCompletionsRequest = {
     ...
@@ -392,7 +392,7 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```typescript
-import { ApologistAgentError } from "apologist-agent";
+import { ApologistAgentError } from "apologist";
 
 try {
     await client.chat.createChatCompletion(...);
@@ -413,7 +413,7 @@ try {
 This SDK supports direct imports of subpackage clients, which allows JavaScript bundlers to tree-shake and include only the imported subpackage code. This results in much smaller bundle sizes.
 
 ```typescript
-import { ChatClient } from 'apologist-agent/chat';
+import { ChatClient } from 'apologist/chat';
 
 const client = new ChatClient({...});
 ```
@@ -423,7 +423,7 @@ const client = new ChatClient({...});
 If you would like to send additional headers as part of the request, use the `headers` request option.
 
 ```typescript
-import { ApologistAgentClient } from "apologist-agent";
+import { ApologistAgentClient } from "apologist";
 
 const client = new ApologistAgentClient({
     ...
@@ -518,7 +518,7 @@ console.log(rawResponse.headers['X-My-Header']);
 The SDK supports logging. You can configure the logger by passing in a `logging` object to the client options.
 
 ```typescript
-import { ApologistAgentClient, logging } from "apologist-agent";
+import { ApologistAgentClient, logging } from "apologist";
 
 const client = new ApologistAgentClient({
     ...
