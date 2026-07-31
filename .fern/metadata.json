@@ -1,0 +1,12 @@
+{
+    "cliVersion": "5.72.1",
+    "generatorName": "fernapi/fern-typescript-sdk",
+    "generatorVersion": "3.85.2",
+    "generatorConfig": {
+        "namespaceExport": "ApologistAgent"
+    },
+    "originGitCommit": "d1d1d7381fe838b624fb95c0d4b1cbebf44bad95",
+    "originGitCommitIsDirty": true,
+    "invokedBy": "manual",
+    "sdkVersion": "0.0.3"
+}

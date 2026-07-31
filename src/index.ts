@@ -1,22 +1,6 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
-
-export { Apologist as default } from './client';
-
-export { type Uploadable, toFile } from './core/uploads';
-export { APIPromise } from './core/api-promise';
-export { Apologist, type ClientOptions } from './client';
-export {
-  ApologistError,
-  APIError,
-  APIConnectionError,
-  APIConnectionTimeoutError,
-  APIUserAbortError,
-  NotFoundError,
-  ConflictError,
-  RateLimitError,
-  BadRequestError,
-  AuthenticationError,
-  InternalServerError,
-  PermissionDeniedError,
-  UnprocessableEntityError,
-} from './core/error';
+export * as ApologistAgent from "./api/index.js";
+export type { BaseClientOptions, BaseRequestOptions } from "./BaseClient.js";
+export { ApologistAgentClient } from "./Client.js";
+export { ApologistAgentEnvironment } from "./environments.js";
+export { ApologistAgentError, ApologistAgentTimeoutError } from "./errors/index.js";
+export * from "./exports.js";
