@@ -1,3 +1,5 @@
+export * as agent from "./agent/index.js";
+export * from "./agent/types/index.js";
 export * from "./benchmarks/client/requests/index.js";
 export * as benchmarks from "./benchmarks/index.js";
 export * from "./benchmarks/types/index.js";
@@ -7,6 +9,9 @@ export * from "./channels/types/index.js";
 export * from "./chat/client/requests/index.js";
 export * as chat from "./chat/index.js";
 export * from "./chat/types/index.js";
+export * from "./conversations/client/requests/index.js";
+export * as conversations from "./conversations/index.js";
+export * from "./conversations/types/index.js";
 export * from "./corpus/client/requests/index.js";
 export * as corpus from "./corpus/index.js";
 export * from "./corpus/types/index.js";

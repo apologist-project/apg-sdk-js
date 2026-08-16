@@ -6,4 +6,6 @@ export type { ReceiveFacebookMessageRequest } from "./ReceiveFacebookMessageRequ
 export type { ReceiveLineWebhookRequest } from "./ReceiveLineWebhookRequest.js";
 export type { ReceiveTelegramUpdateRequest } from "./ReceiveTelegramUpdateRequest.js";
 export type { ReceiveTwilioMessageRequest } from "./ReceiveTwilioMessageRequest.js";
+export type { ReceiveWhatsAppMessageRequest } from "./ReceiveWhatsAppMessageRequest.js";
 export type { VerifyFacebookWebhookRequest } from "./VerifyFacebookWebhookRequest.js";
+export type { VerifyWhatsAppWebhookRequest } from "./VerifyWhatsAppWebhookRequest.js";

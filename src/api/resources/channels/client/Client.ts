@@ -17,7 +17,7 @@ export declare namespace ChannelsClient {
 }
 
 /**
- * Inbound messaging channel webhooks (Discord, Facebook/Instagram, Telegram, Twilio)
+ * Inbound messaging channel webhooks (Discord, Facebook/Instagram, LINE, Telegram, Twilio, WhatsApp)
  */
 export class ChannelsClient {
     protected readonly _options: NormalizedClientOptions<ChannelsClient.Options>;
@@ -708,5 +708,173 @@ export class ChannelsClient {
         }
 
         return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/channels/{id}/twilio");
+    }
+
+    /**
+     * Handles the Meta WhatsApp Cloud API webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
+     *
+     * @param {ApologistAgent.VerifyWhatsAppWebhookRequest} request
+     * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.BadRequestError}
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.channels.verifyWhatsAppWebhook({
+     *         id: "id",
+     *         "hub.mode": "subscribe",
+     *         "hub.verify_token": "hub.verify_token"
+     *     })
+     */
+    public verifyWhatsAppWebhook(
+        request: ApologistAgent.VerifyWhatsAppWebhookRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): core.HttpResponsePromise<string> {
+        return core.HttpResponsePromise.fromPromise(this.__verifyWhatsAppWebhook(request, requestOptions));
+    }
+
+    private async __verifyWhatsAppWebhook(
+        request: ApologistAgent.VerifyWhatsAppWebhookRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<string>> {
+        const { id, "hub.mode": hubMode, "hub.verify_token": hubVerifyToken, "hub.challenge": hubChallenge } = request;
+        const _queryParams: Record<string, unknown> = {
+            "hub.mode": hubMode,
+            "hub.verify_token": hubVerifyToken,
+            "hub.challenge": hubChallenge,
+        };
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `channels/${core.url.encodePathParam(id)}/whatsapp`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            responseType: "text",
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as string, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new ApologistAgent.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/channels/{id}/whatsapp");
+    }
+
+    /**
+     * Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. Signature verification via `x-hub-signature-256` is used when the channel has an App Secret configured; otherwise the webhook relies on URL secrecy and/or an `api_key` query parameter.
+     *
+     * @param {ApologistAgent.ReceiveWhatsAppMessageRequest} request
+     * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.InternalServerError}
+     * @throws {@link ApologistAgent.ServiceUnavailableError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.channels.receiveWhatsAppMessage({
+     *         id: "id",
+     *         body: {
+     *             "key": "value"
+     *         }
+     *     })
+     */
+    public receiveWhatsAppMessage(
+        request: ApologistAgent.ReceiveWhatsAppMessageRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): core.HttpResponsePromise<void> {
+        return core.HttpResponsePromise.fromPromise(this.__receiveWhatsAppMessage(request, requestOptions));
+    }
+
+    private async __receiveWhatsAppMessage(
+        request: ApologistAgent.ReceiveWhatsAppMessageRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<void>> {
+        const { id, "x-hub-signature-256": hubSignature256, body: _body } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({ "x-hub-signature-256": hubSignature256 }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `channels/${core.url.encodePathParam(id)}/whatsapp`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: undefined, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new ApologistAgent.InternalServerError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new ApologistAgent.ServiceUnavailableError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/channels/{id}/whatsapp");
     }
 }
