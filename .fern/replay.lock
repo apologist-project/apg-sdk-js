@@ -30,7 +30,13 @@ generations:
     cli_version: unknown
     generator_versions:
       fernapi/fern-typescript-sdk: 3.85.2
-current_generation: 6fbbe6d4141b4692f04de1b0d4d549170baca9c0
+  - commit_sha: 4fe862ade0a64c83adc14d39ef4b3285f8b3bf44
+    tree_hash: 851e9ffb7088ac48c4a0077dcca46ae18ba8985d
+    timestamp: 2026-08-16T19:20:13.544Z
+    cli_version: unknown
+    generator_versions:
+      fernapi/fern-typescript-sdk: 3.85.2
+current_generation: 4fe862ade0a64c83adc14d39ef4b3285f8b3bf44
 patches:
   - id: patch-0048d5a2
     content_hash: sha256:586870c18261e60bcf065b247a093d90e6151c5d0996c664cf171e106088372b
@@ -729,4 +735,429 @@ patches:
         }
       src/version.ts: |
         export const SDK_VERSION = "1.0.4";
+    status: unresolved
+  - id: patch-de1a6a9b
+    content_hash: sha256:69eaeb8630fb59c6c573e1f905f6d7b8baff2b1eb2638fe4132f15097906ea48
+    original_commit: de1a6a9b4b67027193a3a4e47f40770555af1432
+    original_message: Restore a valid package.json after Fern regeneration.
+    original_author: Jake Carlson <jake@carlsonville.com>
+    base_generation: 87dd1f4d872a1d0973f33e03d0db9c4ec3079c79
+    files:
+      - package.json
+    patch_content: |+
+      From de1a6a9b4b67027193a3a4e47f40770555af1432 Mon Sep 17 00:00:00 2001
+      From: Jake Carlson <jake@carlsonville.com>
+      Date: Sun, 16 Aug 2026 13:27:53 -0500
+      Subject: [PATCH] Restore a valid package.json after Fern regeneration.
+
+      The 1.1.0 generator PR dropped the exports wrapper and left invalid JSON.
+
+      Co-authored-by: Cursor <cursoragent@cursor.com>
+      ---
+       package.json | 28 ++++++++++++++++++++++------
+       1 file changed, 22 insertions(+), 6 deletions(-)
+
+      diff --git a/package.json b/package.json
+      index 51b2a4b..f21fbea 100644
+      --- a/package.json
+      +++ b/package.json
+      @@ -1,10 +1,26 @@
+       {
+      -    "name": "apologist",
+      -    "version": "1.0.5",
+      -    "private": false,
+      -    "repository": {
+      -        "type": "git",
+      -        "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+      +  "name": "apologist",
+      +  "version": "1.0.4",
+      +  "private": false,
+      +  "repository": {
+      +    "type": "git",
+      +    "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+      +  },
+      +  "type": "commonjs",
+      +  "main": "./dist/cjs/index.js",
+      +  "module": "./dist/esm/index.mjs",
+      +  "types": "./dist/cjs/index.d.ts",
+      +  "exports": {
+      +    ".": {
+      +      "import": {
+      +        "types": "./dist/esm/index.d.mts",
+      +        "default": "./dist/esm/index.mjs"
+      +      },
+      +      "require": {
+      +        "types": "./dist/cjs/index.d.ts",
+      +        "default": "./dist/cjs/index.js"
+      +      },
+      +      "default": "./dist/cjs/index.js"
+           },
+           "./chat": {
+             "import": {
+      -- 
+      2.52.0
+
+    theirs_snapshot:
+      package.json: |
+        {
+          "name": "apologist",
+          "version": "1.0.4",
+          "private": false,
+          "repository": {
+            "type": "git",
+            "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+          },
+          "type": "commonjs",
+          "main": "./dist/cjs/index.js",
+          "module": "./dist/esm/index.mjs",
+          "types": "./dist/cjs/index.d.ts",
+          "exports": {
+            ".": {
+              "import": {
+                "types": "./dist/esm/index.d.mts",
+                "default": "./dist/esm/index.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/index.d.ts",
+                "default": "./dist/cjs/index.js"
+              },
+              "default": "./dist/cjs/index.js"
+            },
+            "./chat": {
+              "import": {
+                "types": "./dist/esm/api/resources/chat/exports.d.mts",
+                "default": "./dist/esm/api/resources/chat/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/chat/exports.d.ts",
+                "default": "./dist/cjs/api/resources/chat/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/chat/exports.js"
+            },
+            "./corpus": {
+              "import": {
+                "types": "./dist/esm/api/resources/corpus/exports.d.mts",
+                "default": "./dist/esm/api/resources/corpus/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/corpus/exports.d.ts",
+                "default": "./dist/cjs/api/resources/corpus/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/corpus/exports.js"
+            },
+            "./evaluators": {
+              "import": {
+                "types": "./dist/esm/api/resources/evaluators/exports.d.mts",
+                "default": "./dist/esm/api/resources/evaluators/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/evaluators/exports.d.ts",
+                "default": "./dist/cjs/api/resources/evaluators/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/evaluators/exports.js"
+            },
+            "./ctAs": {
+              "import": {
+                "types": "./dist/esm/api/resources/ctAs/exports.d.mts",
+                "default": "./dist/esm/api/resources/ctAs/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/ctAs/exports.d.ts",
+                "default": "./dist/cjs/api/resources/ctAs/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/ctAs/exports.js"
+            },
+            "./users": {
+              "import": {
+                "types": "./dist/esm/api/resources/users/exports.d.mts",
+                "default": "./dist/esm/api/resources/users/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/users/exports.d.ts",
+                "default": "./dist/cjs/api/resources/users/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/users/exports.js"
+            },
+            "./benchmarks": {
+              "import": {
+                "types": "./dist/esm/api/resources/benchmarks/exports.d.mts",
+                "default": "./dist/esm/api/resources/benchmarks/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/benchmarks/exports.d.ts",
+                "default": "./dist/cjs/api/resources/benchmarks/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/benchmarks/exports.js"
+            },
+            "./channels": {
+              "import": {
+                "types": "./dist/esm/api/resources/channels/exports.d.mts",
+                "default": "./dist/esm/api/resources/channels/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/channels/exports.d.ts",
+                "default": "./dist/cjs/api/resources/channels/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/channels/exports.js"
+            },
+            "./shares": {
+              "import": {
+                "types": "./dist/esm/api/resources/shares/exports.d.mts",
+                "default": "./dist/esm/api/resources/shares/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/shares/exports.d.ts",
+                "default": "./dist/cjs/api/resources/shares/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/shares/exports.js"
+            },
+            "./package.json": "./package.json"
+          },
+          "files": [
+            "dist",
+            "reference.md",
+            "README.md",
+            "LICENSE"
+          ],
+          "scripts": {
+            "format": "biome format --write --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "format:check": "biome format --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "lint": "biome lint --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "lint:fix": "biome lint --fix --unsafe --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "check": "biome check --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "check:fix": "biome check --fix --unsafe --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "build": "pnpm build:cjs && pnpm build:esm",
+            "build:cjs": "tsc --project ./tsconfig.cjs.json",
+            "build:esm": "tsc --project ./tsconfig.esm.json && node scripts/rename-to-esm-files.js dist/esm",
+            "test": "vitest",
+            "test:unit": "vitest --project unit",
+            "test:wire": "vitest --project wire"
+          },
+          "dependencies": {},
+          "devDependencies": {
+            "webpack": "^5.105.4",
+            "ts-loader": "^9.5.4",
+            "vitest": "^4.1.1",
+            "msw": "2.11.2",
+            "@types/node": "^20.0.0",
+            "typescript": "~5.9.3",
+            "@biomejs/biome": "2.4.10"
+          },
+          "browser": {
+            "fs": false,
+            "os": false,
+            "path": false,
+            "stream": false,
+            "crypto": false
+          },
+          "packageManager": "pnpm@10.33.0",
+          "engines": {
+            "node": ">=18.0.0"
+          },
+          "sideEffects": false
+        }
+    status: unresolved
+  - id: patch-a723ff70
+    content_hash: sha256:2bb4c979a9e1dc24d272ec51e14f285c27e7330d799e52b5c9baee0bc53d9713
+    original_commit: a723ff7015d570112457cc7b7f24d1f3a2fc2cc0
+    original_message: Release 1.1.0.
+    original_author: Jake Carlson <jake@carlsonville.com>
+    base_generation: 87dd1f4d872a1d0973f33e03d0db9c4ec3079c79
+    files:
+      - package.json
+      - src/version.ts
+    patch_content: |+
+      From a723ff7015d570112457cc7b7f24d1f3a2fc2cc0 Mon Sep 17 00:00:00 2001
+      From: Jake Carlson <jake@carlsonville.com>
+      Date: Sun, 16 Aug 2026 13:28:14 -0500
+      Subject: [PATCH] Release 1.1.0.
+
+      ---
+       package.json   | 2 +-
+       src/version.ts | 2 +-
+       2 files changed, 2 insertions(+), 2 deletions(-)
+
+      diff --git a/package.json b/package.json
+      index f21fbea..1339d63 100644
+      --- a/package.json
+      +++ b/package.json
+      @@ -1,6 +1,6 @@
+       {
+         "name": "apologist",
+      -  "version": "1.0.4",
+      +  "version": "1.1.0",
+         "private": false,
+         "repository": {
+           "type": "git",
+      diff --git a/src/version.ts b/src/version.ts
+      index d2581cd..22eda09 100644
+      --- a/src/version.ts
+      +++ b/src/version.ts
+      @@ -1 +1 @@
+      -export const SDK_VERSION = "1.0.5";
+      +export const SDK_VERSION = "1.1.0";
+      -- 
+      2.52.0
+
+    theirs_snapshot:
+      package.json: |
+        {
+          "name": "apologist",
+          "version": "1.1.0",
+          "private": false,
+          "repository": {
+            "type": "git",
+            "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+          },
+          "type": "commonjs",
+          "main": "./dist/cjs/index.js",
+          "module": "./dist/esm/index.mjs",
+          "types": "./dist/cjs/index.d.ts",
+          "exports": {
+            ".": {
+              "import": {
+                "types": "./dist/esm/index.d.mts",
+                "default": "./dist/esm/index.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/index.d.ts",
+                "default": "./dist/cjs/index.js"
+              },
+              "default": "./dist/cjs/index.js"
+            },
+            "./chat": {
+              "import": {
+                "types": "./dist/esm/api/resources/chat/exports.d.mts",
+                "default": "./dist/esm/api/resources/chat/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/chat/exports.d.ts",
+                "default": "./dist/cjs/api/resources/chat/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/chat/exports.js"
+            },
+            "./corpus": {
+              "import": {
+                "types": "./dist/esm/api/resources/corpus/exports.d.mts",
+                "default": "./dist/esm/api/resources/corpus/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/corpus/exports.d.ts",
+                "default": "./dist/cjs/api/resources/corpus/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/corpus/exports.js"
+            },
+            "./evaluators": {
+              "import": {
+                "types": "./dist/esm/api/resources/evaluators/exports.d.mts",
+                "default": "./dist/esm/api/resources/evaluators/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/evaluators/exports.d.ts",
+                "default": "./dist/cjs/api/resources/evaluators/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/evaluators/exports.js"
+            },
+            "./ctAs": {
+              "import": {
+                "types": "./dist/esm/api/resources/ctAs/exports.d.mts",
+                "default": "./dist/esm/api/resources/ctAs/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/ctAs/exports.d.ts",
+                "default": "./dist/cjs/api/resources/ctAs/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/ctAs/exports.js"
+            },
+            "./users": {
+              "import": {
+                "types": "./dist/esm/api/resources/users/exports.d.mts",
+                "default": "./dist/esm/api/resources/users/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/users/exports.d.ts",
+                "default": "./dist/cjs/api/resources/users/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/users/exports.js"
+            },
+            "./benchmarks": {
+              "import": {
+                "types": "./dist/esm/api/resources/benchmarks/exports.d.mts",
+                "default": "./dist/esm/api/resources/benchmarks/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/benchmarks/exports.d.ts",
+                "default": "./dist/cjs/api/resources/benchmarks/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/benchmarks/exports.js"
+            },
+            "./channels": {
+              "import": {
+                "types": "./dist/esm/api/resources/channels/exports.d.mts",
+                "default": "./dist/esm/api/resources/channels/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/channels/exports.d.ts",
+                "default": "./dist/cjs/api/resources/channels/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/channels/exports.js"
+            },
+            "./shares": {
+              "import": {
+                "types": "./dist/esm/api/resources/shares/exports.d.mts",
+                "default": "./dist/esm/api/resources/shares/exports.mjs"
+              },
+              "require": {
+                "types": "./dist/cjs/api/resources/shares/exports.d.ts",
+                "default": "./dist/cjs/api/resources/shares/exports.js"
+              },
+              "default": "./dist/cjs/api/resources/shares/exports.js"
+            },
+            "./package.json": "./package.json"
+          },
+          "files": [
+            "dist",
+            "reference.md",
+            "README.md",
+            "LICENSE"
+          ],
+          "scripts": {
+            "format": "biome format --write --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "format:check": "biome format --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "lint": "biome lint --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "lint:fix": "biome lint --fix --unsafe --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "check": "biome check --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "check:fix": "biome check --fix --unsafe --skip-parse-errors --no-errors-on-unmatched --max-diagnostics=none",
+            "build": "pnpm build:cjs && pnpm build:esm",
+            "build:cjs": "tsc --project ./tsconfig.cjs.json",
+            "build:esm": "tsc --project ./tsconfig.esm.json && node scripts/rename-to-esm-files.js dist/esm",
+            "test": "vitest",
+            "test:unit": "vitest --project unit",
+            "test:wire": "vitest --project wire"
+          },
+          "dependencies": {},
+          "devDependencies": {
+            "webpack": "^5.105.4",
+            "ts-loader": "^9.5.4",
+            "vitest": "^4.1.1",
+            "msw": "2.11.2",
+            "@types/node": "^20.0.0",
+            "typescript": "~5.9.3",
+            "@biomejs/biome": "2.4.10"
+          },
+          "browser": {
+            "fs": false,
+            "os": false,
+            "path": false,
+            "stream": false,
+            "crypto": false
+          },
+          "packageManager": "pnpm@10.33.0",
+          "engines": {
+            "node": ">=18.0.0"
+          },
+          "sideEffects": false
+        }
+      src/version.ts: |
+        export const SDK_VERSION = "1.1.0";
     status: unresolved
