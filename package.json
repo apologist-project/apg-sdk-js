@@ -1,10 +1,26 @@
 {
-    "name": "apologist",
-    "version": "1.0.5",
-    "private": false,
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+  "name": "apologist",
+  "version": "1.0.4",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+  },
+  "type": "commonjs",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.mts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "default": "./dist/cjs/index.js"
     },
     "./chat": {
       "import": {
