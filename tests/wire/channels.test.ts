@@ -134,6 +134,159 @@ describe("ChannelsClient", () => {
         }).rejects.toThrow(ApologistAgent.UnauthorizedError);
     });
 
+    test("getLineChannelStatus (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { status: "status", channel: "channel", active: true };
+
+        server.mockEndpoint().get("/channels/id/line").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
+
+        const response = await client.channels.getLineChannelStatus({
+            id: "id",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("getLineChannelStatus (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server.mockEndpoint().get("/channels/id/line").respondWith().statusCode(404).jsonBody(rawResponseBody).build();
+
+        await expect(async () => {
+            return await client.channels.getLineChannelStatus({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.NotFoundError);
+    });
+
+    test("receiveLineWebhook (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { key: "value" };
+
+        server.mockEndpoint().post("/channels/id/line").jsonBody(rawRequestBody).respondWith().statusCode(200).build();
+
+        const response = await client.channels.receiveLineWebhook({
+            id: "id",
+            body: {
+                key: "value",
+            },
+        });
+        expect(response).toEqual(undefined);
+    });
+
+    test("receiveLineWebhook (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/line")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(400)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveLineWebhook({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.BadRequestError);
+    });
+
+    test("receiveLineWebhook (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/line")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveLineWebhook({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.ForbiddenError);
+    });
+
+    test("receiveLineWebhook (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/line")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveLineWebhook({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.InternalServerError);
+    });
+
+    test("receiveLineWebhook (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/line")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveLineWebhook({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.ServiceUnavailableError);
+    });
+
     test("receiveFacebookMessage (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
