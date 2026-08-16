@@ -501,4 +501,107 @@ describe("ChannelsClient", () => {
             });
         }).rejects.toThrow(ApologistAgent.InternalServerError);
     });
+
+    test("receiveWhatsAppMessage (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/whatsapp")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .build();
+
+        const response = await client.channels.receiveWhatsAppMessage({
+            id: "id",
+            body: {
+                key: "value",
+            },
+        });
+        expect(response).toEqual(undefined);
+    });
+
+    test("receiveWhatsAppMessage (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/whatsapp")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveWhatsAppMessage({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.ForbiddenError);
+    });
+
+    test("receiveWhatsAppMessage (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/whatsapp")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveWhatsAppMessage({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.InternalServerError);
+    });
+
+    test("receiveWhatsAppMessage (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/channels/id/whatsapp")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.channels.receiveWhatsAppMessage({
+                id: "id",
+                body: {
+                    string: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(ApologistAgent.ServiceUnavailableError);
+    });
 });
