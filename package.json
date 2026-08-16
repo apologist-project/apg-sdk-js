@@ -1,138 +1,37 @@
 {
-    "name": "apologist",
-    "version": "1.1.1",
-    "private": false,
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+  "name": "apologist",
+  "version": "1.2.0",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apologist-project/apg-sdk-js.git"
+  },
+  "type": "commonjs",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.mts",
+        "default": "./dist/esm/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "default": "./dist/cjs/index.js"
     },
-    "type": "commonjs",
-    "main": "./dist/cjs/index.js",
-    "module": "./dist/esm/index.mjs",
-    "types": "./dist/cjs/index.d.ts",
-    "exports": {
-        ".": {
-            "import": {
-                "types": "./dist/esm/index.d.mts",
-                "default": "./dist/esm/index.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/index.d.ts",
-                "default": "./dist/cjs/index.js"
-            },
-            "default": "./dist/cjs/index.js"
-        },
-        "./chat": {
-            "import": {
-                "types": "./dist/esm/api/resources/chat/exports.d.mts",
-                "default": "./dist/esm/api/resources/chat/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/chat/exports.d.ts",
-                "default": "./dist/cjs/api/resources/chat/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/chat/exports.js"
-        },
-        "./corpus": {
-            "import": {
-                "types": "./dist/esm/api/resources/corpus/exports.d.mts",
-                "default": "./dist/esm/api/resources/corpus/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/corpus/exports.d.ts",
-                "default": "./dist/cjs/api/resources/corpus/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/corpus/exports.js"
-        },
-        "./evaluators": {
-            "import": {
-                "types": "./dist/esm/api/resources/evaluators/exports.d.mts",
-                "default": "./dist/esm/api/resources/evaluators/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/evaluators/exports.d.ts",
-                "default": "./dist/cjs/api/resources/evaluators/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/evaluators/exports.js"
-        },
-        "./ctAs": {
-            "import": {
-                "types": "./dist/esm/api/resources/ctAs/exports.d.mts",
-                "default": "./dist/esm/api/resources/ctAs/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/ctAs/exports.d.ts",
-                "default": "./dist/cjs/api/resources/ctAs/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/ctAs/exports.js"
-        },
-        "./users": {
-            "import": {
-                "types": "./dist/esm/api/resources/users/exports.d.mts",
-                "default": "./dist/esm/api/resources/users/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/users/exports.d.ts",
-                "default": "./dist/cjs/api/resources/users/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/users/exports.js"
-        },
-        "./benchmarks": {
-            "import": {
-                "types": "./dist/esm/api/resources/benchmarks/exports.d.mts",
-                "default": "./dist/esm/api/resources/benchmarks/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/benchmarks/exports.d.ts",
-                "default": "./dist/cjs/api/resources/benchmarks/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/benchmarks/exports.js"
-        },
-        "./agent": {
-            "import": {
-                "types": "./dist/esm/api/resources/agent/exports.d.mts",
-                "default": "./dist/esm/api/resources/agent/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/agent/exports.d.ts",
-                "default": "./dist/cjs/api/resources/agent/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/agent/exports.js"
-        },
-        "./conversations": {
-            "import": {
-                "types": "./dist/esm/api/resources/conversations/exports.d.mts",
-                "default": "./dist/esm/api/resources/conversations/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/conversations/exports.d.ts",
-                "default": "./dist/cjs/api/resources/conversations/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/conversations/exports.js"
-        },
-        "./channels": {
-            "import": {
-                "types": "./dist/esm/api/resources/channels/exports.d.mts",
-                "default": "./dist/esm/api/resources/channels/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/channels/exports.d.ts",
-                "default": "./dist/cjs/api/resources/channels/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/channels/exports.js"
-        },
-        "./shares": {
-            "import": {
-                "types": "./dist/esm/api/resources/shares/exports.d.mts",
-                "default": "./dist/esm/api/resources/shares/exports.mjs"
-            },
-            "require": {
-                "types": "./dist/cjs/api/resources/shares/exports.d.ts",
-                "default": "./dist/cjs/api/resources/shares/exports.js"
-            },
-            "default": "./dist/cjs/api/resources/shares/exports.js"
-        },
-        "./package.json": "./package.json"
+    "./chat": {
+      "import": {
+        "types": "./dist/esm/api/resources/chat/exports.d.mts",
+        "default": "./dist/esm/api/resources/chat/exports.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/api/resources/chat/exports.d.ts",
+        "default": "./dist/cjs/api/resources/chat/exports.js"
+      },
+      "default": "./dist/cjs/api/resources/chat/exports.js"
     },
     "./corpus": {
       "import": {
@@ -189,6 +88,28 @@
       },
       "default": "./dist/cjs/api/resources/benchmarks/exports.js"
     },
+    "./agent": {
+      "import": {
+        "types": "./dist/esm/api/resources/agent/exports.d.mts",
+        "default": "./dist/esm/api/resources/agent/exports.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/api/resources/agent/exports.d.ts",
+        "default": "./dist/cjs/api/resources/agent/exports.js"
+      },
+      "default": "./dist/cjs/api/resources/agent/exports.js"
+    },
+    "./conversations": {
+      "import": {
+        "types": "./dist/esm/api/resources/conversations/exports.d.mts",
+        "default": "./dist/esm/api/resources/conversations/exports.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/api/resources/conversations/exports.d.ts",
+        "default": "./dist/cjs/api/resources/conversations/exports.js"
+      },
+      "default": "./dist/cjs/api/resources/conversations/exports.js"
+    },
     "./channels": {
       "import": {
         "types": "./dist/esm/api/resources/channels/exports.d.mts",
@@ -213,6 +134,84 @@
     },
     "./package.json": "./package.json"
   },
+  "./corpus": {
+    "import": {
+      "types": "./dist/esm/api/resources/corpus/exports.d.mts",
+      "default": "./dist/esm/api/resources/corpus/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/corpus/exports.d.ts",
+      "default": "./dist/cjs/api/resources/corpus/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/corpus/exports.js"
+  },
+  "./evaluators": {
+    "import": {
+      "types": "./dist/esm/api/resources/evaluators/exports.d.mts",
+      "default": "./dist/esm/api/resources/evaluators/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/evaluators/exports.d.ts",
+      "default": "./dist/cjs/api/resources/evaluators/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/evaluators/exports.js"
+  },
+  "./ctAs": {
+    "import": {
+      "types": "./dist/esm/api/resources/ctAs/exports.d.mts",
+      "default": "./dist/esm/api/resources/ctAs/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/ctAs/exports.d.ts",
+      "default": "./dist/cjs/api/resources/ctAs/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/ctAs/exports.js"
+  },
+  "./users": {
+    "import": {
+      "types": "./dist/esm/api/resources/users/exports.d.mts",
+      "default": "./dist/esm/api/resources/users/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/users/exports.d.ts",
+      "default": "./dist/cjs/api/resources/users/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/users/exports.js"
+  },
+  "./benchmarks": {
+    "import": {
+      "types": "./dist/esm/api/resources/benchmarks/exports.d.mts",
+      "default": "./dist/esm/api/resources/benchmarks/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/benchmarks/exports.d.ts",
+      "default": "./dist/cjs/api/resources/benchmarks/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/benchmarks/exports.js"
+  },
+  "./channels": {
+    "import": {
+      "types": "./dist/esm/api/resources/channels/exports.d.mts",
+      "default": "./dist/esm/api/resources/channels/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/channels/exports.d.ts",
+      "default": "./dist/cjs/api/resources/channels/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/channels/exports.js"
+  },
+  "./shares": {
+    "import": {
+      "types": "./dist/esm/api/resources/shares/exports.d.mts",
+      "default": "./dist/esm/api/resources/shares/exports.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/api/resources/shares/exports.d.ts",
+      "default": "./dist/cjs/api/resources/shares/exports.js"
+    },
+    "default": "./dist/cjs/api/resources/shares/exports.js"
+  },
+  "./package.json": "./package.json",
   "files": [
     "dist",
     "reference.md",
