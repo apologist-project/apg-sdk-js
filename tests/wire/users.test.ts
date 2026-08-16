@@ -14,6 +14,7 @@ describe("UsersClient", () => {
                 {
                     id: "id",
                     external_id: "external_id",
+                    referral_code: "referral_code",
                     team_id: 1,
                     created_at: "created_at",
                     migrated_at: "migrated_at",
@@ -110,6 +111,7 @@ describe("UsersClient", () => {
             data: {
                 id: "id",
                 external_id: "external_id",
+                referral_code: "referral_code",
                 team_id: 1,
                 created_at: "created_at",
                 migrated_at: "migrated_at",
@@ -180,6 +182,7 @@ describe("UsersClient", () => {
             data: {
                 id: "id",
                 external_id: "external_id",
+                referral_code: "referral_code",
                 team_id: 1,
                 created_at: "created_at",
                 migrated_at: "migrated_at",

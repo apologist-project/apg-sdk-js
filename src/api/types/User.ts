@@ -6,6 +6,8 @@ export interface User {
     /** Internal user id (UUID). */
     id?: string | undefined;
     external_id?: (string | null) | undefined;
+    /** First-write-wins acquisition / campaign referral code. */
+    referral_code?: (string | null) | undefined;
     team_id?: number | undefined;
     created_at?: string | undefined;
     migrated_at?: (string | null) | undefined;

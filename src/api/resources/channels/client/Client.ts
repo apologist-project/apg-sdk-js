@@ -181,6 +181,162 @@ export class ChannelsClient {
     }
 
     /**
+     * Returns the status of the LINE channel. Used as a lightweight health/verification endpoint.
+     *
+     * @param {ApologistAgent.GetLineChannelStatusRequest} request
+     * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.channels.getLineChannelStatus({
+     *         id: "id"
+     *     })
+     */
+    public getLineChannelStatus(
+        request: ApologistAgent.GetLineChannelStatusRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): core.HttpResponsePromise<ApologistAgent.GetLineChannelStatusResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__getLineChannelStatus(request, requestOptions));
+    }
+
+    private async __getLineChannelStatus(
+        request: ApologistAgent.GetLineChannelStatusRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<ApologistAgent.GetLineChannelStatusResponse>> {
+        const { id } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `channels/${core.url.encodePathParam(id)}/line`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as ApologistAgent.GetLineChannelStatusResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/channels/{id}/line");
+    }
+
+    /**
+     * Receives LINE Messaging API webhook events for the channel. Requests are verified via the `x-line-signature` HMAC-SHA256 (Base64) header using the channel secret unless an `api_key` is present. Payload shape is defined by LINE. The route acknowledges quickly and processes text `message` and `follow` events asynchronously.
+     *
+     * @param {ApologistAgent.ReceiveLineWebhookRequest} request
+     * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.BadRequestError}
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.InternalServerError}
+     * @throws {@link ApologistAgent.ServiceUnavailableError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.channels.receiveLineWebhook({
+     *         id: "id",
+     *         body: {
+     *             "key": "value"
+     *         }
+     *     })
+     */
+    public receiveLineWebhook(
+        request: ApologistAgent.ReceiveLineWebhookRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): core.HttpResponsePromise<void> {
+        return core.HttpResponsePromise.fromPromise(this.__receiveLineWebhook(request, requestOptions));
+    }
+
+    private async __receiveLineWebhook(
+        request: ApologistAgent.ReceiveLineWebhookRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<void>> {
+        const { id, "x-line-signature": lineSignature, body: _body } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({ "x-line-signature": lineSignature }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `channels/${core.url.encodePathParam(id)}/line`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: undefined, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new ApologistAgent.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new ApologistAgent.InternalServerError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new ApologistAgent.ServiceUnavailableError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/channels/{id}/line");
+    }
+
+    /**
      * Handles the Meta webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
      *
      * @param {ApologistAgent.VerifyFacebookWebhookRequest} request
