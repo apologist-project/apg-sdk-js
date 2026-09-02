@@ -17,13 +17,171 @@ export declare namespace ChannelsClient {
 }
 
 /**
- * Inbound messaging channel webhooks (Discord, Facebook/Instagram, LINE, Telegram, Twilio, WhatsApp)
+ * Inbound messaging channel webhooks (Chatwoot, Discord, Facebook/Instagram, LINE, Telegram, Twilio, WhatsApp)
  */
 export class ChannelsClient {
     protected readonly _options: NormalizedClientOptions<ChannelsClient.Options>;
 
     constructor(options: ChannelsClient.Options = {}) {
         this._options = normalizeClientOptions(options);
+    }
+
+    /**
+     * Returns the status of the Chatwoot channel. Used as a lightweight health/verification endpoint.
+     *
+     * @param {ApologistAgent.GetChatwootChannelStatusRequest} request
+     * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.channels.getChatwootChannelStatus({
+     *         id: "id"
+     *     })
+     */
+    public getChatwootChannelStatus(
+        request: ApologistAgent.GetChatwootChannelStatusRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): core.HttpResponsePromise<ApologistAgent.GetChatwootChannelStatusResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__getChatwootChannelStatus(request, requestOptions));
+    }
+
+    private async __getChatwootChannelStatus(
+        request: ApologistAgent.GetChatwootChannelStatusRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<ApologistAgent.GetChatwootChannelStatusResponse>> {
+        const { id } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `channels/${core.url.encodePathParam(id)}/chatwoot`,
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as ApologistAgent.GetChatwootChannelStatusResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/channels/{id}/chatwoot");
+    }
+
+    /**
+     * Receives Chatwoot Agent Bot webhook events for the channel. Chatwoot owns the messaging inbox (Facebook, website widget, and others). This Agent replies through the Chatwoot API and maps native bot handoff to conversation pause/resume. Requests are verified via the `X-Chatwoot-Signature` HMAC-SHA256 header using the configured webhook secret unless an `api_key` is present and no secret is set. The route acknowledges immediately (Chatwoot times out in about 5 seconds) and processes events asynchronously.
+     *
+     * @param {ApologistAgent.ReceiveChatwootWebhookRequest} request
+     * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.BadRequestError}
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.ServiceUnavailableError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.channels.receiveChatwootWebhook({
+     *         id: "id",
+     *         body: {
+     *             "key": "value"
+     *         }
+     *     })
+     */
+    public receiveChatwootWebhook(
+        request: ApologistAgent.ReceiveChatwootWebhookRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): core.HttpResponsePromise<void> {
+        return core.HttpResponsePromise.fromPromise(this.__receiveChatwootWebhook(request, requestOptions));
+    }
+
+    private async __receiveChatwootWebhook(
+        request: ApologistAgent.ReceiveChatwootWebhookRequest,
+        requestOptions?: ChannelsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<void>> {
+        const {
+            id,
+            "X-Chatwoot-Signature": chatwootSignature,
+            "X-Chatwoot-Timestamp": chatwootTimestamp,
+            body: _body,
+        } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "X-Chatwoot-Signature": chatwootSignature,
+                "X-Chatwoot-Timestamp": chatwootTimestamp,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `channels/${core.url.encodePathParam(id)}/chatwoot`,
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            requestType: "json",
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: undefined, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new ApologistAgent.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 503:
+                    throw new ApologistAgent.ServiceUnavailableError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/channels/{id}/chatwoot");
     }
 
     /**

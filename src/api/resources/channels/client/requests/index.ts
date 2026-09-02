@@ -1,6 +1,8 @@
+export type { GetChatwootChannelStatusRequest } from "./GetChatwootChannelStatusRequest.js";
 export type { GetDiscordChannelStatusRequest } from "./GetDiscordChannelStatusRequest.js";
 export type { GetInstagramPrivacyPolicyRequest } from "./GetInstagramPrivacyPolicyRequest.js";
 export type { GetLineChannelStatusRequest } from "./GetLineChannelStatusRequest.js";
+export type { ReceiveChatwootWebhookRequest } from "./ReceiveChatwootWebhookRequest.js";
 export type { ReceiveDiscordInteractionRequest } from "./ReceiveDiscordInteractionRequest.js";
 export type { ReceiveFacebookMessageRequest } from "./ReceiveFacebookMessageRequest.js";
 export type { ReceiveLineWebhookRequest } from "./ReceiveLineWebhookRequest.js";

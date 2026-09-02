@@ -316,4 +316,186 @@ describe("UsersClient", () => {
             });
         }).rejects.toThrow(ApologistAgent.InternalServerError);
     });
+
+    test("scrubUser (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = {
+            data: {
+                id: "id",
+                mode: "scrub",
+                redact_requested_at: "redact_requested_at",
+                messages_redacted: 1,
+                remaining: 1,
+            },
+        };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/scrub")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.users.scrubUser({
+            user_id: "user_id",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("scrubUser (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/scrub")
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.users.scrubUser({
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(ApologistAgent.ForbiddenError);
+    });
+
+    test("scrubUser (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/scrub")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.users.scrubUser({
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(ApologistAgent.NotFoundError);
+    });
+
+    test("scrubUser (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/scrub")
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.users.scrubUser({
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(ApologistAgent.InternalServerError);
+    });
+
+    test("anonymizeUser (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = {
+            data: {
+                id: "id",
+                mode: "scrub",
+                redact_requested_at: "redact_requested_at",
+                messages_redacted: 1,
+                remaining: 1,
+            },
+        };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/anonymize")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.users.anonymizeUser({
+            user_id: "user_id",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("anonymizeUser (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/anonymize")
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.users.anonymizeUser({
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(ApologistAgent.ForbiddenError);
+    });
+
+    test("anonymizeUser (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/anonymize")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.users.anonymizeUser({
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(ApologistAgent.NotFoundError);
+    });
+
+    test("anonymizeUser (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/users/user_id/anonymize")
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.users.anonymizeUser({
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(ApologistAgent.InternalServerError);
+    });
 });
