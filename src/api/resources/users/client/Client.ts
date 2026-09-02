@@ -368,4 +368,160 @@ export class UsersClient {
 
         return handleNonStatusCodeError(_response.error, _response.rawResponse, "PATCH", "/users/{user_id}");
     }
+
+    /**
+     * Replaces this user's message-adjacent text with a placeholder. Conversation rows, identifiers, flags, and analytics identity stay in place. Repeat calls finish leftover rows.
+     *
+     * @param {ApologistAgent.ScrubUserRequest} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link ApologistAgent.InternalServerError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.users.scrubUser({
+     *         user_id: "user_id"
+     *     })
+     */
+    public scrubUser(
+        request: ApologistAgent.ScrubUserRequest,
+        requestOptions?: UsersClient.RequestOptions,
+    ): core.HttpResponsePromise<ApologistAgent.ScrubUserResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__scrubUser(request, requestOptions));
+    }
+
+    private async __scrubUser(
+        request: ApologistAgent.ScrubUserRequest,
+        requestOptions?: UsersClient.RequestOptions,
+    ): Promise<core.WithRawResponse<ApologistAgent.ScrubUserResponse>> {
+        const { user_id: userId } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `users/${core.url.encodePathParam(userId)}/scrub`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as ApologistAgent.ScrubUserResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new ApologistAgent.InternalServerError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/users/{user_id}/scrub");
+    }
+
+    /**
+     * Redacts detected personal data in this user's message-adjacent text with regex, then an optional hosted redaction service when the Agent has that option on. Conversation rows, identifiers, flags, and analytics identity stay in place. Repeat calls finish leftover rows and skip text that is already redacted.
+     *
+     * @param {ApologistAgent.AnonymizeUserRequest} request
+     * @param {UsersClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link ApologistAgent.InternalServerError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.users.anonymizeUser({
+     *         user_id: "user_id"
+     *     })
+     */
+    public anonymizeUser(
+        request: ApologistAgent.AnonymizeUserRequest,
+        requestOptions?: UsersClient.RequestOptions,
+    ): core.HttpResponsePromise<ApologistAgent.AnonymizeUserResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__anonymizeUser(request, requestOptions));
+    }
+
+    private async __anonymizeUser(
+        request: ApologistAgent.AnonymizeUserRequest,
+        requestOptions?: UsersClient.RequestOptions,
+    ): Promise<core.WithRawResponse<ApologistAgent.AnonymizeUserResponse>> {
+        const { user_id: userId } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `users/${core.url.encodePathParam(userId)}/anonymize`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as ApologistAgent.AnonymizeUserResponse, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new ApologistAgent.InternalServerError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/users/{user_id}/anonymize");
+    }
 }
