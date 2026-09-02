@@ -9,6 +9,7 @@ export * from "./SuccessResponse.js";
 export * from "./TagRef.js";
 export * from "./User.js";
 export * from "./UserFlag.js";
+export * from "./UserRedactResponse.js";
 export * from "./WebhookAgentRef.js";
 export * from "./WebhookCta.js";
 export * from "./WebhookEvaluation.js";
