@@ -65,7 +65,7 @@ describe("UsersClient", () => {
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
 
         const rawResponseBody = {
-            data: [{ id: 1, name: "name", user_id: 1, team_id: 1, synced_at: "synced_at" }],
+            data: [{ id: 1, name: "name", key: "key", user_id: 1, team_id: 1, synced_at: "synced_at" }],
             total: 1,
             page: 1,
             per_page: 1,

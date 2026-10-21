@@ -12,7 +12,7 @@
 export interface ReceiveWhatsAppMessageRequest {
     /** The channel id */
     id: string;
-    /** Meta `sha256=<hex>` HMAC of the raw body keyed with the WhatsApp App Secret. Required when the channel has an App Secret configured and the webhook URL does not include an api_key. */
+    /** Meta `sha256=<hex>` HMAC of the raw body keyed with the WhatsApp App Secret. Required when the channel has an App Secret configured. */
     "x-hub-signature-256"?: string;
     /** WhatsApp Cloud API webhook payload (`entry` + `changes`). */
     body: Record<string, unknown>;

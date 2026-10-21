@@ -96,7 +96,7 @@ export class ChannelsClient {
     /**
      * Receives Chatwoot Agent Bot webhook events for the channel. Chatwoot owns the messaging inbox (Facebook, website widget, and others). This Agent replies through the Chatwoot API and maps native bot handoff to conversation pause/resume. Requests are verified via the `X-Chatwoot-Signature` HMAC-SHA256 header using the configured webhook secret unless an `api_key` is present and no secret is set. The route acknowledges immediately (Chatwoot times out in about 5 seconds) and processes events asynchronously.
      *
-     * @param {ApologistAgent.ReceiveChatwootWebhookRequest} request
+     * @param {ApologistAgent.ChatwootWebhookPayload} request
      * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link ApologistAgent.BadRequestError}
@@ -107,28 +107,74 @@ export class ChannelsClient {
      *
      * @example
      *     await client.channels.receiveChatwootWebhook({
-     *         id: "id",
-     *         body: {
-     *             "key": "value"
+     *         "X-Chatwoot-Signature": "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+     *         "X-Chatwoot-Timestamp": "1710000000",
+     *         channelId: "91",
+     *         event: "message_created",
+     *         id: 9001,
+     *         content: "Hello from Messenger",
+     *         message_type: "incoming",
+     *         "private": false,
+     *         account: {
+     *             id: 7
+     *         },
+     *         sender: {
+     *             id: 55,
+     *             name: "Pat",
+     *             type: "contact"
+     *         },
+     *         conversation: {
+     *             id: 42,
+     *             status: "pending",
+     *             account: {
+     *                 id: 7
+     *             },
+     *             meta: {
+     *                 assignee_type: "AgentBot",
+     *                 sender: {
+     *                     id: 55,
+     *                     name: "Pat"
+     *                 }
+     *             }
+     *         }
+     *     })
+     *
+     * @example
+     *     await client.channels.receiveChatwootWebhook({
+     *         "X-Chatwoot-Signature": "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+     *         "X-Chatwoot-Timestamp": "1710000000",
+     *         channelId: "91",
+     *         event: "conversation_opened",
+     *         id: 42,
+     *         status: "open",
+     *         account: {
+     *             id: 7
+     *         },
+     *         meta: {
+     *             assignee_type: "User",
+     *             sender: {
+     *                 id: 55,
+     *                 name: "Pat"
+     *             }
      *         }
      *     })
      */
     public receiveChatwootWebhook(
-        request: ApologistAgent.ReceiveChatwootWebhookRequest,
+        request: ApologistAgent.ChatwootWebhookPayload,
         requestOptions?: ChannelsClient.RequestOptions,
     ): core.HttpResponsePromise<void> {
         return core.HttpResponsePromise.fromPromise(this.__receiveChatwootWebhook(request, requestOptions));
     }
 
     private async __receiveChatwootWebhook(
-        request: ApologistAgent.ReceiveChatwootWebhookRequest,
+        request: ApologistAgent.ChatwootWebhookPayload,
         requestOptions?: ChannelsClient.RequestOptions,
     ): Promise<core.WithRawResponse<void>> {
         const {
-            id,
+            channelId,
             "X-Chatwoot-Signature": chatwootSignature,
             "X-Chatwoot-Timestamp": chatwootTimestamp,
-            body: _body,
+            ..._body
         } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
@@ -143,7 +189,7 @@ export class ChannelsClient {
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (await core.Supplier.get(this._options.environment)) ??
                     environments.ApologistAgentEnvironment.Default,
-                `channels/${core.url.encodePathParam(id)}/chatwoot`,
+                `channels/${core.url.encodePathParam(channelId)}/chatwoot`,
             ),
             method: "POST",
             headers: _headers,
@@ -181,7 +227,12 @@ export class ChannelsClient {
             }
         }
 
-        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/channels/{id}/chatwoot");
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/channels/{channelId}/chatwoot",
+        );
     }
 
     /**
@@ -869,7 +920,7 @@ export class ChannelsClient {
     }
 
     /**
-     * Handles the Meta WhatsApp Cloud API webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
+     * Handles the Meta WhatsApp Cloud API webhook verification handshake. Requires an `api_key` query parameter or `x-api-key` header, then echoes `hub.challenge` when `hub.verify_token` matches the channel's configured token.
      *
      * @param {ApologistAgent.VerifyWhatsAppWebhookRequest} request
      * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.
@@ -951,7 +1002,7 @@ export class ChannelsClient {
     }
 
     /**
-     * Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. Signature verification via `x-hub-signature-256` is used when the channel has an App Secret configured; otherwise the webhook relies on URL secrecy and/or an `api_key` query parameter.
+     * Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. An `api_key` query parameter or `x-api-key` header is required. Signature verification via `x-hub-signature-256` is also required when the channel has an App Secret configured.
      *
      * @param {ApologistAgent.ReceiveWhatsAppMessageRequest} request
      * @param {ChannelsClient.RequestOptions} requestOptions - Request-specific configuration.

@@ -27,7 +27,9 @@ Returns a paginated list of chat completions (prompts) for the agent, with appli
 <dd>
 
 ```typescript
-await client.chat.listChatCompletions();
+await client.chat.listChatCompletions({
+    traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+});
 
 ```
 </dd>
@@ -91,7 +93,7 @@ Creates a chat completion using the agent's configured model. Supports both stre
 
 ```typescript
 await client.chat.createChatCompletion({
-    "key": "value"
+    traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
 });
 
 ```
@@ -372,6 +374,136 @@ await client.chat.shareCompletion({
 <dd>
 
 **request:** `ApologistAgent.ShareRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `ChatClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="/src/api/resources/chat/client/Client.ts">scrubCompletion</a>({ ...params }) -> ApologistAgent.ScrubCompletionResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Replaces this chat completion's message-adjacent text with a placeholder. Conversation rows, identifiers, likes, flags, and analytics identity stay in place. Repeat calls finish leftover rows.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.chat.scrubCompletion({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ApologistAgent.ScrubCompletionRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `ChatClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.chat.<a href="/src/api/resources/chat/client/Client.ts">anonymizeCompletion</a>({ ...params }) -> ApologistAgent.AnonymizeCompletionResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Redacts detected personal data in this chat completion's message-adjacent text with regex, then an optional hosted redaction service when the Agent has that option on. Conversation rows, identifiers, likes, flags, and analytics identity stay in place. Repeat calls finish leftover rows and skip text that is already redacted.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.chat.anonymizeCompletion({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ApologistAgent.AnonymizeCompletionRequest` 
     
 </dd>
 </dl>
@@ -1016,9 +1148,7 @@ Finds matching CTAs based on conversation context, user, session, device, or mes
 <dd>
 
 ```typescript
-await client.ctAs.matchCtas({
-    "key": "value"
-});
+await client.ctAs.matchCtas();
 
 ```
 </dd>
@@ -1585,7 +1715,7 @@ await client.benchmarks.listBenchmarkRuns({
 <dl>
 <dd>
 
-Executes a benchmark run and returns the aggregated result with nested evaluators, questions, and a flat evaluations array.
+Executes a benchmark run and returns the aggregated result with nested evaluators, questions, and a flat evaluations array. A run that cannot finish inside one request returns 202 with `completed_at` null and continues in the background. Poll Get a benchmark run until `completed_at` is set.
 </dd>
 </dl>
 </dd>
@@ -2168,9 +2298,35 @@ Receives Chatwoot Agent Bot webhook events for the channel. Chatwoot owns the me
 
 ```typescript
 await client.channels.receiveChatwootWebhook({
-    id: "id",
-    body: {
-        "key": "value"
+    "X-Chatwoot-Signature": "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+    "X-Chatwoot-Timestamp": "1710000000",
+    channelId: "91",
+    event: "message_created",
+    id: 9001,
+    content: "Hello from Messenger",
+    message_type: "incoming",
+    "private": false,
+    account: {
+        id: 7
+    },
+    sender: {
+        id: 55,
+        name: "Pat",
+        type: "contact"
+    },
+    conversation: {
+        id: 42,
+        status: "pending",
+        account: {
+            id: 7
+        },
+        meta: {
+            assignee_type: "AgentBot",
+            sender: {
+                id: 55,
+                name: "Pat"
+            }
+        }
     }
 });
 
@@ -2188,7 +2344,7 @@ await client.channels.receiveChatwootWebhook({
 <dl>
 <dd>
 
-**request:** `ApologistAgent.ReceiveChatwootWebhookRequest` 
+**request:** `ApologistAgent.ChatwootWebhookPayload` 
     
 </dd>
 </dl>
@@ -2821,7 +2977,7 @@ await client.channels.receiveTwilioMessage({
 <dl>
 <dd>
 
-Handles the Meta WhatsApp Cloud API webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
+Handles the Meta WhatsApp Cloud API webhook verification handshake. Requires an `api_key` query parameter or `x-api-key` header, then echoes `hub.challenge` when `hub.verify_token` matches the channel's configured token.
 </dd>
 </dl>
 </dd>
@@ -2888,7 +3044,7 @@ await client.channels.verifyWhatsAppWebhook({
 <dl>
 <dd>
 
-Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. Signature verification via `x-hub-signature-256` is used when the channel has an App Secret configured; otherwise the webhook relies on URL secrecy and/or an `api_key` query parameter.
+Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. An `api_key` query parameter or `x-api-key` header is required. Signature verification via `x-hub-signature-256` is also required when the channel has an App Secret configured.
 </dd>
 </dl>
 </dd>

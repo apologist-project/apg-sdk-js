@@ -9,7 +9,7 @@
  *     }
  */
 export interface LogCorpusReferralRedirectRequest {
-    /** The model type (e.g., 'source') */
+    /** Listing model. One of collection, contributor, organization, or source. */
     model: string;
     /** The numeric ID of the corpus item */
     id: string;
