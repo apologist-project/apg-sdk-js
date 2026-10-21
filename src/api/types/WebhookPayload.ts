@@ -3,7 +3,7 @@
 import type * as ApologistAgent from "../index.js";
 
 /**
- * Canonical JSON body POSTed to a configured webhook URL. `notification`, `event`, and `agent` are always present; the remaining sections appear only when relevant to the event. Treat the payload as additive and ignore unrecognised fields.
+ * Canonical JSON body POSTed to a configured webhook URL. `notification`, `event`, and `agent` are always present; `trace` is present when the event ran inside an instrumented API request. The remaining sections appear only when relevant to the event. Treat the payload as additive and ignore unrecognised fields.
  */
 export interface WebhookPayload {
     notification: ApologistAgent.WebhookNotificationRef;
@@ -19,7 +19,23 @@ export interface WebhookPayload {
     cta?: ApologistAgent.WebhookCta | undefined;
     /** Present for guardrail_trigger events. */
     guardrail?: ApologistAgent.WebhookNamedRef | undefined;
-    /** Present for CTA/guardrail events that ran an evaluation. */
+    /** Present for automation_trigger events. */
+    automation?: ApologistAgent.WebhookNamedRef | undefined;
+    /** Present for CTA, guardrail, or automation events that ran an evaluation. */
     evaluator?: ApologistAgent.WebhookNamedRef | undefined;
     evaluation?: ApologistAgent.WebhookEvaluation | undefined;
+    /** OpenTelemetry context for the API request that produced this event. Present when the Agent created or continued a W3C trace. */
+    trace?: WebhookPayload.Trace | undefined;
+}
+
+export namespace WebhookPayload {
+    /**
+     * OpenTelemetry context for the API request that produced this event. Present when the Agent created or continued a W3C trace.
+     */
+    export interface Trace {
+        /** 32-character hex trace id */
+        trace_id?: string | undefined;
+        /** 16-character hex span id */
+        span_id?: string | undefined;
+    }
 }

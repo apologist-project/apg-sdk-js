@@ -2,7 +2,7 @@
 
 import type { BaseClientOptions, BaseRequestOptions } from "../../../../BaseClient.js";
 import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "../../../../BaseClient.js";
-import { mergeHeaders } from "../../../../core/headers.js";
+import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
 import * as core from "../../../../core/index.js";
 import { mergeAdditionalBodyParameters } from "../../../../core/requestBody.js";
 import * as environments from "../../../../environments.js";
@@ -38,7 +38,9 @@ export class ChatClient {
      * @throws {@link errors.ApologistAgentTimeoutError}
      *
      * @example
-     *     await client.chat.listChatCompletions()
+     *     await client.chat.listChatCompletions({
+     *         traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+     *     })
      */
     public listChatCompletions(
         request: ApologistAgent.ListChatCompletionsRequest = {},
@@ -70,6 +72,9 @@ export class ChatClient {
             user_id: userId,
             min_timestamp: minTimestamp,
             max_timestamp: maxTimestamp,
+            traceparent,
+            tracestate,
+            baggage,
         } = request;
         const _queryParams: Record<string, unknown> = {
             page,
@@ -95,6 +100,7 @@ export class ChatClient {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ traceparent: traceparent, tracestate: tracestate, baggage: baggage }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -159,24 +165,26 @@ export class ChatClient {
      *
      * @example
      *     await client.chat.createChatCompletion({
-     *         "key": "value"
+     *         traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
      *     })
      */
     public createChatCompletion(
-        request: ApologistAgent.ChatCompletionRequest,
+        request: ApologistAgent.ChatCompletionRequest = {},
         requestOptions?: ChatClient.RequestOptions,
     ): core.HttpResponsePromise<ApologistAgent.ChatCompletionResponse> {
         return core.HttpResponsePromise.fromPromise(this.__createChatCompletion(request, requestOptions));
     }
 
     private async __createChatCompletion(
-        request: ApologistAgent.ChatCompletionRequest,
+        request: ApologistAgent.ChatCompletionRequest = {},
         requestOptions?: ChatClient.RequestOptions,
     ): Promise<core.WithRawResponse<ApologistAgent.ChatCompletionResponse>> {
+        const { traceparent, tracestate, baggage, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
             this._options?.headers,
+            mergeOnlyDefinedHeaders({ traceparent: traceparent, tracestate: tracestate, baggage: baggage }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher({
@@ -191,7 +199,7 @@ export class ChatClient {
             contentType: "application/json",
             queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
             requestType: "json",
-            body: mergeAdditionalBodyParameters(request, requestOptions?.additionalBodyParameters),
+            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -573,6 +581,173 @@ export class ChatClient {
         }
 
         return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/chat/completions/{id}/share");
+    }
+
+    /**
+     * Replaces this chat completion's message-adjacent text with a placeholder. Conversation rows, identifiers, likes, flags, and analytics identity stay in place. Repeat calls finish leftover rows.
+     *
+     * @param {ApologistAgent.ScrubCompletionRequest} request
+     * @param {ChatClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link ApologistAgent.InternalServerError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.chat.scrubCompletion({
+     *         id: "id"
+     *     })
+     */
+    public scrubCompletion(
+        request: ApologistAgent.ScrubCompletionRequest,
+        requestOptions?: ChatClient.RequestOptions,
+    ): core.HttpResponsePromise<ApologistAgent.ScrubCompletionResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__scrubCompletion(request, requestOptions));
+    }
+
+    private async __scrubCompletion(
+        request: ApologistAgent.ScrubCompletionRequest,
+        requestOptions?: ChatClient.RequestOptions,
+    ): Promise<core.WithRawResponse<ApologistAgent.ScrubCompletionResponse>> {
+        const { id } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `chat/completions/${core.url.encodePathParam(id)}/scrub`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as ApologistAgent.ScrubCompletionResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new ApologistAgent.InternalServerError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "POST", "/chat/completions/{id}/scrub");
+    }
+
+    /**
+     * Redacts detected personal data in this chat completion's message-adjacent text with regex, then an optional hosted redaction service when the Agent has that option on. Conversation rows, identifiers, likes, flags, and analytics identity stay in place. Repeat calls finish leftover rows and skip text that is already redacted.
+     *
+     * @param {ApologistAgent.AnonymizeCompletionRequest} request
+     * @param {ChatClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link ApologistAgent.ForbiddenError}
+     * @throws {@link ApologistAgent.NotFoundError}
+     * @throws {@link ApologistAgent.InternalServerError}
+     * @throws {@link errors.ApologistAgentError}
+     * @throws {@link errors.ApologistAgentTimeoutError}
+     *
+     * @example
+     *     await client.chat.anonymizeCompletion({
+     *         id: "id"
+     *     })
+     */
+    public anonymizeCompletion(
+        request: ApologistAgent.AnonymizeCompletionRequest,
+        requestOptions?: ChatClient.RequestOptions,
+    ): core.HttpResponsePromise<ApologistAgent.AnonymizeCompletionResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__anonymizeCompletion(request, requestOptions));
+    }
+
+    private async __anonymizeCompletion(
+        request: ApologistAgent.AnonymizeCompletionRequest,
+        requestOptions?: ChatClient.RequestOptions,
+    ): Promise<core.WithRawResponse<ApologistAgent.AnonymizeCompletionResponse>> {
+        const { id } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.ApologistAgentEnvironment.Default,
+                `chat/completions/${core.url.encodePathParam(id)}/anonymize`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as ApologistAgent.AnonymizeCompletionResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 403:
+                    throw new ApologistAgent.ForbiddenError(_response.error.body as unknown, _response.rawResponse);
+                case 404:
+                    throw new ApologistAgent.NotFoundError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new ApologistAgent.InternalServerError(
+                        _response.error.body as unknown,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApologistAgentError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/chat/completions/{id}/anonymize",
+        );
     }
 
     /**

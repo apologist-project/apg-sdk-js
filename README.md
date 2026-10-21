@@ -50,7 +50,7 @@ import { ApologistAgentClient } from "apologist";
 
 const client = new ApologistAgentClient({ apiKey: "YOUR_API_KEY" });
 await client.chat.createChatCompletion({
-    "key": "value"
+    traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
 });
 ```
 

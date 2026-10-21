@@ -9,7 +9,7 @@
  *     }
  */
 export interface ImpressionRequest {
-    /** The model type (e.g., 'source') */
+    /** Listing model. One of collection, contributor, organization, or source. */
     model: string;
     /** The ID of the corpus item */
     id: string;

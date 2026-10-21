@@ -8,8 +8,8 @@ describe("CtAsClient", () => {
     test("matchCtas (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
-        const rawResponseBody = { ctas: [{ ctas: { key: "value" } }, { ctas: { key: "value" } }] };
+        const rawRequestBody = {};
+        const rawResponseBody = { ctas: [{ key: "value" }] };
 
         server
             .mockEndpoint()
@@ -20,16 +20,14 @@ describe("CtAsClient", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.ctAs.matchCtas({
-            key: "value",
-        });
+        const response = await client.ctAs.matchCtas();
         expect(response).toEqual(rawResponseBody);
     });
 
     test("matchCtas (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
@@ -42,16 +40,14 @@ describe("CtAsClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.ctAs.matchCtas({
-                key: "value",
-            });
+            return await client.ctAs.matchCtas();
         }).rejects.toThrow(ApologistAgent.ForbiddenError);
     });
 
     test("matchCtas (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { success: true, errors: ["errors", "errors"] };
 
         server
@@ -64,16 +60,14 @@ describe("CtAsClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.ctAs.matchCtas({
-                key: "value",
-            });
+            return await client.ctAs.matchCtas();
         }).rejects.toThrow(ApologistAgent.UnprocessableEntityError);
     });
 
     test("matchCtas (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
@@ -86,16 +80,14 @@ describe("CtAsClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.ctAs.matchCtas({
-                key: "value",
-            });
+            return await client.ctAs.matchCtas();
         }).rejects.toThrow(ApologistAgent.InternalServerError);
     });
 
     test("matchCtas (5)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
@@ -108,9 +100,7 @@ describe("CtAsClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.ctAs.matchCtas({
-                key: "value",
-            });
+            return await client.ctAs.matchCtas();
         }).rejects.toThrow(ApologistAgent.ServiceUnavailableError);
     });
 

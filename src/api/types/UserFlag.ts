@@ -6,6 +6,8 @@
 export interface UserFlag {
     id?: number | undefined;
     name?: string | undefined;
+    /** Optional channel user-attribute key. When null, Agent derives a lowercase snake_case key from name. */
+    key?: (string | null) | undefined;
     /** Upstream owning user id when present (mirrored from Ignite). */
     user_id?: (number | null) | undefined;
     team_id?: (number | null) | undefined;
