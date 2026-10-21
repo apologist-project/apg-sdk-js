@@ -14,6 +14,7 @@ export namespace WebhookEventInfo {
         PromptSubmit: "prompt_submit",
         ResponseStart: "response_start",
         ResponseEnd: "response_end",
+        AutomationTrigger: "automation_trigger",
         AutomationsEnd: "automations_end",
         ResponseLike: "response_like",
         ResponseFlag: "response_flag",

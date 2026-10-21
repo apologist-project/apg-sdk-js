@@ -2,7 +2,9 @@
 
 /**
  * @example
- *     {}
+ *     {
+ *         traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
+ *     }
  */
 export interface ListChatCompletionsRequest {
     page?: number;
@@ -24,4 +26,10 @@ export interface ListChatCompletionsRequest {
     user_id?: string;
     min_timestamp?: string;
     max_timestamp?: string;
+    /** W3C Trace Context parent. When present, the Agent continues this trace for the request. Applies to all `/api/v1` endpoints. */
+    traceparent?: string;
+    /** Optional W3C tracestate associated with traceparent. */
+    tracestate?: string;
+    /** Optional W3C baggage. Prompt text is never copied onto spans. */
+    baggage?: string;
 }

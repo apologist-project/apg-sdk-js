@@ -11,9 +11,18 @@ describe("ChatClient", () => {
 
         const rawResponseBody = { data: [{ key: "value" }], total: 1, page: 1, per_page: 1 };
 
-        server.mockEndpoint().get("/chat/completions").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
+        server
+            .mockEndpoint()
+            .get("/chat/completions")
+            .header("traceparent", "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
 
-        const response = await client.chat.listChatCompletions();
+        const response = await client.chat.listChatCompletions({
+            traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+        });
         expect(response).toEqual(rawResponseBody);
     });
 
@@ -46,26 +55,13 @@ describe("ChatClient", () => {
     test("createChatCompletion (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = {
             id: "id",
-            object: "object",
+            object: "chat.completion",
             created: 1,
             model: "model",
-            choices: [
-                {
-                    index: 1,
-                    message: { role: "system", content: "content" },
-                    logprobs: { logprobs: { key: "value" } },
-                    finish_reason: "finish_reason",
-                },
-                {
-                    index: 1,
-                    message: { role: "system", content: "content" },
-                    logprobs: { logprobs: { key: "value" } },
-                    finish_reason: "finish_reason",
-                },
-            ],
+            choices: [{ index: 1, logprobs: { key: "value" }, finish_reason: "finish_reason" }],
             usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 1 },
             cached: true,
         };
@@ -73,6 +69,7 @@ describe("ChatClient", () => {
         server
             .mockEndpoint()
             .post("/chat/completions")
+            .header("traceparent", "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01")
             .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(200)
@@ -80,7 +77,7 @@ describe("ChatClient", () => {
             .build();
 
         const response = await client.chat.createChatCompletion({
-            key: "value",
+            traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
         });
         expect(response).toEqual(rawResponseBody);
     });
@@ -88,7 +85,7 @@ describe("ChatClient", () => {
     test("createChatCompletion (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
@@ -101,16 +98,14 @@ describe("ChatClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.chat.createChatCompletion({
-                key: "value",
-            });
+            return await client.chat.createChatCompletion();
         }).rejects.toThrow(ApologistAgent.ForbiddenError);
     });
 
     test("createChatCompletion (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { success: true, errors: ["errors", "errors"] };
 
         server
@@ -123,16 +118,14 @@ describe("ChatClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.chat.createChatCompletion({
-                key: "value",
-            });
+            return await client.chat.createChatCompletion();
         }).rejects.toThrow(ApologistAgent.UnprocessableEntityError);
     });
 
     test("createChatCompletion (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
@@ -145,9 +138,7 @@ describe("ChatClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.chat.createChatCompletion({
-                key: "value",
-            });
+            return await client.chat.createChatCompletion();
         }).rejects.toThrow(ApologistAgent.ServiceUnavailableError);
     });
 
@@ -509,6 +500,172 @@ describe("ChatClient", () => {
                 id: "id",
             });
         }).rejects.toThrow(ApologistAgent.ServiceUnavailableError);
+    });
+
+    test("scrubCompletion (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { data: { id: "id", mode: "scrub", messages_redacted: 1, remaining: 1 } };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/scrub")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.chat.scrubCompletion({
+            id: "id",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("scrubCompletion (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/scrub")
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.chat.scrubCompletion({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.ForbiddenError);
+    });
+
+    test("scrubCompletion (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/scrub")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.chat.scrubCompletion({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.NotFoundError);
+    });
+
+    test("scrubCompletion (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/scrub")
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.chat.scrubCompletion({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.InternalServerError);
+    });
+
+    test("anonymizeCompletion (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { data: { id: "id", mode: "scrub", messages_redacted: 1, remaining: 1 } };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/anonymize")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.chat.anonymizeCompletion({
+            id: "id",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("anonymizeCompletion (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/anonymize")
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.chat.anonymizeCompletion({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.ForbiddenError);
+    });
+
+    test("anonymizeCompletion (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/anonymize")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.chat.anonymizeCompletion({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.NotFoundError);
+    });
+
+    test("anonymizeCompletion (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { key: "value" };
+
+        server
+            .mockEndpoint()
+            .post("/chat/completions/id/anonymize")
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.chat.anonymizeCompletion({
+                id: "id",
+            });
+        }).rejects.toThrow(ApologistAgent.InternalServerError);
     });
 
     test("getChatCompletion (1)", async () => {

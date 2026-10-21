@@ -40,19 +40,17 @@ export class CtAsClient {
      * @throws {@link errors.ApologistAgentTimeoutError}
      *
      * @example
-     *     await client.ctAs.matchCtas({
-     *         "key": "value"
-     *     })
+     *     await client.ctAs.matchCtas()
      */
     public matchCtas(
-        request: ApologistAgent.CtaMatchRequest,
+        request: ApologistAgent.CtaMatchRequest = {},
         requestOptions?: CtAsClient.RequestOptions,
     ): core.HttpResponsePromise<ApologistAgent.MatchCtasResponse> {
         return core.HttpResponsePromise.fromPromise(this.__matchCtas(request, requestOptions));
     }
 
     private async __matchCtas(
-        request: ApologistAgent.CtaMatchRequest,
+        request: ApologistAgent.CtaMatchRequest = {},
         requestOptions?: CtAsClient.RequestOptions,
     ): Promise<core.WithRawResponse<ApologistAgent.MatchCtasResponse>> {
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();

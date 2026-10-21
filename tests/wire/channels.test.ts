@@ -49,20 +49,62 @@ describe("ChannelsClient", () => {
     test("receiveChatwootWebhook (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { key: "value" };
+        const rawRequestBody = {
+            event: "message_created",
+            id: 9001,
+            content: "Hello from Messenger",
+            message_type: "incoming",
+            private: false,
+            account: { id: 7 },
+            sender: { id: 55, name: "Pat", type: "contact" },
+            conversation: {
+                id: 42,
+                status: "pending",
+                account: { id: 7 },
+                meta: { assignee_type: "AgentBot", sender: { id: 55, name: "Pat" } },
+            },
+        };
 
         server
             .mockEndpoint()
-            .post("/channels/id/chatwoot")
+            .post("/channels/91/chatwoot")
+            .header("X-Chatwoot-Signature", "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
+            .header("X-Chatwoot-Timestamp", "1710000000")
             .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(200)
             .build();
 
         const response = await client.channels.receiveChatwootWebhook({
-            id: "id",
-            body: {
-                key: "value",
+            "X-Chatwoot-Signature": "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+            "X-Chatwoot-Timestamp": "1710000000",
+            channelId: "91",
+            event: "message_created",
+            id: 9001,
+            content: "Hello from Messenger",
+            message_type: "incoming",
+            private: false,
+            account: {
+                id: 7,
+            },
+            sender: {
+                id: 55,
+                name: "Pat",
+                type: "contact",
+            },
+            conversation: {
+                id: 42,
+                status: "pending",
+                account: {
+                    id: 7,
+                },
+                meta: {
+                    assignee_type: "AgentBot",
+                    sender: {
+                        id: 55,
+                        name: "Pat",
+                    },
+                },
             },
         });
         expect(response).toEqual(undefined);
@@ -71,12 +113,54 @@ describe("ChannelsClient", () => {
     test("receiveChatwootWebhook (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { string: { key: "value" } };
+        const rawRequestBody = {
+            event: "conversation_opened",
+            id: 42,
+            status: "open",
+            account: { id: 7 },
+            meta: { assignee_type: "User", sender: { id: 55, name: "Pat" } },
+        };
+
+        server
+            .mockEndpoint()
+            .post("/channels/91/chatwoot")
+            .header("X-Chatwoot-Signature", "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
+            .header("X-Chatwoot-Timestamp", "1710000000")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .build();
+
+        const response = await client.channels.receiveChatwootWebhook({
+            "X-Chatwoot-Signature": "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+            "X-Chatwoot-Timestamp": "1710000000",
+            channelId: "91",
+            event: "conversation_opened",
+            id: 42,
+            status: "open",
+            account: {
+                id: 7,
+            },
+            meta: {
+                assignee_type: "User",
+                sender: {
+                    id: 55,
+                    name: "Pat",
+                },
+            },
+        });
+        expect(response).toEqual(undefined);
+    });
+
+    test("receiveChatwootWebhook (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
             .mockEndpoint()
-            .post("/channels/id/chatwoot")
+            .post("/channels/channelId/chatwoot")
             .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(400)
@@ -85,25 +169,20 @@ describe("ChannelsClient", () => {
 
         await expect(async () => {
             return await client.channels.receiveChatwootWebhook({
-                id: "id",
-                body: {
-                    string: {
-                        key: "value",
-                    },
-                },
+                channelId: "channelId",
             });
         }).rejects.toThrow(ApologistAgent.BadRequestError);
     });
 
-    test("receiveChatwootWebhook (3)", async () => {
+    test("receiveChatwootWebhook (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { string: { key: "value" } };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
             .mockEndpoint()
-            .post("/channels/id/chatwoot")
+            .post("/channels/channelId/chatwoot")
             .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(403)
@@ -112,25 +191,20 @@ describe("ChannelsClient", () => {
 
         await expect(async () => {
             return await client.channels.receiveChatwootWebhook({
-                id: "id",
-                body: {
-                    string: {
-                        key: "value",
-                    },
-                },
+                channelId: "channelId",
             });
         }).rejects.toThrow(ApologistAgent.ForbiddenError);
     });
 
-    test("receiveChatwootWebhook (4)", async () => {
+    test("receiveChatwootWebhook (5)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApologistAgentClient({ maxRetries: 0, apiKey: "test", environment: server.baseUrl });
-        const rawRequestBody = { string: { key: "value" } };
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
 
         server
             .mockEndpoint()
-            .post("/channels/id/chatwoot")
+            .post("/channels/channelId/chatwoot")
             .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(503)
@@ -139,12 +213,7 @@ describe("ChannelsClient", () => {
 
         await expect(async () => {
             return await client.channels.receiveChatwootWebhook({
-                id: "id",
-                body: {
-                    string: {
-                        key: "value",
-                    },
-                },
+                channelId: "channelId",
             });
         }).rejects.toThrow(ApologistAgent.ServiceUnavailableError);
     });
